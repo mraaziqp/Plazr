@@ -143,6 +143,93 @@ export default function App() {
     }
   }, [activeRole, registeredUser]);
 
+  // Load saved user session on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('plazr_user');
+      if (saved) {
+        const parsedUser: RegisteredUser = JSON.parse(saved);
+        setRegisteredUser(parsedUser);
+        if (parsedUser.role) {
+          setActiveRole(parsedUser.role);
+        }
+        setVendorProfile(prev => ({
+          ...prev,
+          ownerName: parsedUser.fullName || prev.ownerName,
+          businessName: parsedUser.businessOrOrgName || prev.businessName,
+          email: parsedUser.email || prev.email,
+          phone: parsedUser.phone || prev.phone,
+          city: parsedUser.city || prev.city,
+          category: parsedUser.categoryOrVenue || prev.category,
+          interests: parsedUser.interests || prev.interests
+        }));
+      }
+    } catch (err) {
+      console.error('Error restoring user session:', err);
+    }
+  }, []);
+
+  const handleRegisterComplete = (user: RegisteredUser) => {
+    setRegisteredUser(user);
+    try {
+      localStorage.setItem('plazr_user', JSON.stringify(user));
+    } catch (err) {
+      console.error('Error saving user session:', err);
+    }
+
+    setActiveRole(user.role);
+
+    setVendorProfile(prev => ({
+      ...prev,
+      ownerName: user.fullName || prev.ownerName,
+      businessName: user.businessOrOrgName || prev.businessName,
+      email: user.email || prev.email,
+      phone: user.phone || prev.phone,
+      city: user.city || prev.city,
+      category: user.categoryOrVenue || prev.category,
+      interests: user.interests || prev.interests
+    }));
+
+    setNotifications(prev => [
+      {
+        id: `notif-welcome-${Date.now()}`,
+        title: '🎉 Welcome to Plazr SA!',
+        message: `Your account as an ${user.role === 'planner' ? 'Event Organiser' : 'Market Vendor'} is active and synchronized with Neon DB.`,
+        timestamp: 'Just now',
+        read: false,
+        type: 'success',
+        actionTarget: 'discovery'
+      },
+      ...prev
+    ]);
+  };
+
+  const handleLogout = () => {
+    setRegisteredUser(null);
+    try {
+      localStorage.removeItem('plazr_user');
+    } catch (err) {
+      console.error('Error removing user session:', err);
+    }
+    setVendorProfile(INITIAL_VENDOR_PROFILE);
+    setActiveRole('vendor');
+
+    setNotifications(prev => [
+      {
+        id: `notif-logout-${Date.now()}`,
+        title: '👋 Logged Out Successfully',
+        message: 'You have been signed out of your Plazr account.',
+        timestamp: 'Just now',
+        read: false,
+        type: 'system',
+        actionTarget: 'discovery'
+      },
+      ...prev
+    ]);
+
+    setIsAuthModalOpen(true);
+  };
+
   // Automated Push Notification Checker for Outdated Compliance & 2-Day Market Opening Alerts
   useEffect(() => {
     // 1. Check for outdated/expiring documents or unvetted status
@@ -244,32 +331,7 @@ export default function App() {
     }
   };
 
-  const handleRegisterComplete = (user: RegisteredUser) => {
-    setRegisteredUser(user);
-    setActiveRole(user.role);
 
-    setVendorProfile(prev => ({
-      ...prev,
-      ownerName: user.fullName,
-      businessName: user.businessOrOrgName,
-      email: user.email,
-      phone: user.phone,
-      interests: user.interests
-    }));
-
-    setNotifications(prev => [
-      {
-        id: `notif-welcome-${Date.now()}`,
-        title: '🎉 Welcome to Plazr SA!',
-        message: `Your account as an ${user.role === 'planner' ? 'Event Organiser' : 'Market Vendor'} has been registered with tailored interests.`,
-        timestamp: 'Just now',
-        read: false,
-        type: 'success',
-        actionTarget: 'discovery'
-      },
-      ...prev
-    ]);
-  };
 
   // Selected Market for Interactive Stall Picker Overlay
   const [selectedMarketForStallPicker, setSelectedMarketForStallPicker] = useState<MarketEvent | null>(null);
@@ -797,6 +859,7 @@ export default function App() {
         onOpenLocationPreferences={() => setIsLocationPreferencesOpen(true)}
         onOpenAddMarketModal={() => setIsAddMarketModalOpen(true)}
         onReplaySplash={() => setShowSplash(true)}
+        onLogout={handleLogout}
       />
 
       {/* MOBILE APP STARTUP SPLASH ANIMATION */}
