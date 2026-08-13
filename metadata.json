@@ -1,0 +1,6 @@
+{
+  "name": "Plazr",
+  "description": "Multi-tenant South African street market vendor & event planner platform with Tinder-style discovery, document expiry validation, interactive floor plan stall picker, and instant PayFast checkout.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
