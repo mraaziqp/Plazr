@@ -1,4 +1,36 @@
-export type UserRole = 'vendor' | 'planner';
+export type UserRole = 'vendor' | 'planner' | 'admin';
+
+export interface UserActivityLog {
+  id: string;
+  userId?: string;
+  userEmail: string;
+  action: string;
+  details: string;
+  timestamp: string;
+  type: 'auth' | 'booking' | 'payout' | 'document' | 'admin' | 'system';
+}
+
+export interface SalesTransaction {
+  id: string;
+  marketId: string;
+  marketTitle: string;
+  eventDate: string;
+  amountZar: number;
+  platformFeeZar: number;
+  netEarningsZar: number;
+  status: 'completed' | 'pending' | 'payout_requested' | 'paid_out';
+  spotId: string;
+  paymentMethod: 'payfast' | 'wallet' | 'eft';
+  createdAt: string;
+}
+
+export interface MonthlySalesStat {
+  month: string;
+  grossSalesZar: number;
+  netPayoutsZar: number;
+  bookingsCount: number;
+}
+
 
 export type CategoryTag = 
   | '#ArtisanalFood'

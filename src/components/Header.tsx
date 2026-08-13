@@ -42,8 +42,8 @@ interface HeaderProps {
   mobileFrameMode: boolean;
   onToggleMobileFrameMode: () => void;
   // Navigation actions
-  vendorActiveTab?: 'discovery' | 'applications';
-  onSelectVendorTab?: (tab: 'discovery' | 'applications') => void;
+  vendorActiveTab?: 'discovery' | 'applications' | 'sales' | 'vault';
+  onSelectVendorTab?: (tab: 'discovery' | 'applications' | 'sales' | 'vault') => void;
   plannerActiveTab?: 'queue' | 'floorplan' | 'revenue' | 'gate_loadin';
   onSelectPlannerTab?: (tab: 'queue' | 'floorplan' | 'revenue' | 'gate_loadin') => void;
   onOpenQRScanner?: () => void;
@@ -194,6 +194,17 @@ export const Header: React.FC<HeaderProps> = ({
                   <span>Organiser</span>
                   {!isOrganiser && <Sparkles className="w-3 h-3 text-amber-400" />}
                 </button>
+                <button
+                  onClick={() => onRoleChange('admin')}
+                  className={`px-3 py-1 rounded-lg transition-all flex items-center space-x-1 ${
+                    activeRole === 'admin' 
+                      ? 'bg-purple-950 text-white shadow-xs font-black' 
+                      : 'text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  <span>Admin</span>
+                  <ShieldCheck className="w-3 h-3 text-purple-400" />
+                </button>
               </div>
             </div>
 
@@ -214,6 +225,22 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <Flame className="w-3.5 h-3.5 text-emerald-600" />
                 <span>Explore Markets</span>
+              </button>
+
+              {/* Sales Analytics */}
+              <button
+                onClick={() => {
+                  onRoleChange('vendor');
+                  if (onSelectVendorTab) onSelectVendorTab('sales');
+                }}
+                className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full font-bold transition-all ${
+                  vendorActiveTab === 'sales' && activeRole === 'vendor'
+                    ? 'bg-amber-50 text-amber-800 border border-amber-200 font-extrabold'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <BarChart3 className="w-3.5 h-3.5 text-amber-600" />
+                <span>Sales & Revenue</span>
               </button>
 
               {/* Applications & Bookings */}

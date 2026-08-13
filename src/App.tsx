@@ -44,6 +44,8 @@ import { CoBrandedGraphicGenerator } from './components/CoBrandedGraphicGenerato
 import { MarketDiscovery } from './components/vendor/MarketDiscovery';
 import { StallPicker } from './components/vendor/StallPicker';
 import { VendorApplicationsList } from './components/vendor/VendorApplicationsList';
+import { SalesDashboard } from './components/vendor/SalesDashboard';
+import { AdminDashboard } from './components/admin/AdminDashboard';
 
 import { ApplicantSwipeDashboard } from './components/planner/ApplicantSwipeDashboard';
 import { FloorPlanManager } from './components/planner/FloorPlanManager';
@@ -90,8 +92,8 @@ export default function App() {
   const [walletTransactions, setWalletTransactions] = useState<WalletTransaction[]>(INITIAL_WALLET_TRANSACTIONS);
   const [walletBalanceZar, setWalletBalanceZar] = useState<number>(2850.00);
 
-  // Vendor Active Tab: 'discovery' | 'applications' | 'vault'
-  const [vendorActiveTab, setVendorActiveTab] = useState<'discovery' | 'applications' | 'vault'>('discovery');
+  // Vendor Active Tab: 'discovery' | 'applications' | 'sales' | 'vault'
+  const [vendorActiveTab, setVendorActiveTab] = useState<'discovery' | 'applications' | 'sales' | 'vault'>('discovery');
   const [vendorDiscoveryMode, setVendorDiscoveryMode] = useState<'explore' | 'applications_active'>('explore');
 
   // Planner Active Tab: 'queue' | 'floorplan' | 'revenue' | 'gate_loadin'
@@ -959,6 +961,18 @@ export default function App() {
               </button>
 
               <button
+                onClick={() => setVendorActiveTab('sales')}
+                className={`flex-1 py-2 rounded-full text-xs font-bold transition-all flex items-center justify-center space-x-1.5 ${
+                  vendorActiveTab === 'sales'
+                    ? 'bg-slate-900 text-white shadow-xs font-extrabold'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <TrendingUp className="w-3.5 h-3.5 text-amber-500" />
+                <span>Sales & Revenue</span>
+              </button>
+
+              <button
                 onClick={() => setVendorActiveTab('applications')}
                 className={`flex-1 py-2 rounded-full text-xs font-bold transition-all flex items-center justify-center space-x-1.5 ${
                   vendorActiveTab === 'applications'
@@ -967,7 +981,7 @@ export default function App() {
                 }`}
               >
                 <Calendar className="w-3.5 h-3.5 text-indigo-500" />
-                <span>Application Progress ({applications.length})</span>
+                <span>Applications ({applications.length})</span>
               </button>
 
               <button
@@ -1007,6 +1021,18 @@ export default function App() {
               />
             )}
 
+            {/* TAB CONTENT: Sales & Revenue Analytics */}
+            {vendorActiveTab === 'sales' && (
+              <SalesDashboard
+                registeredUser={registeredUser}
+                vendorProfile={vendorProfile}
+                applications={applications}
+                walletBalanceZar={walletBalanceZar}
+                walletTransactions={walletTransactions}
+                onOpenWallet={() => setIsWalletOpen(true)}
+              />
+            )}
+
             {/* TAB CONTENT: Vendor Applications List */}
             {vendorActiveTab === 'applications' && (
               <VendorApplicationsList
@@ -1027,6 +1053,16 @@ export default function App() {
             )}
 
           </div>
+        )}
+
+        {/* MASTER ADMIN PORTAL VIEW */}
+        {activeRole === 'admin' && (
+          <AdminDashboard
+            markets={markets}
+            applications={applications}
+            registeredUser={registeredUser}
+            onUpdateMarkets={setMarkets}
+          />
         )}
 
         {/* MARKET PLANNER PORTAL VIEW */}
