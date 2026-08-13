@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { MarketEvent, RegisteredUser, UserActivityLog, VendorApplication } from '../../types';
-import { fetchAllUsersFromDb, fetchUserActivities, logUserActivity } from '../../lib/db';
+import { MarketEvent, RegisteredUser, UserActivityLog, VendorApplication, UserRole } from '../../types';
+import { fetchAllUsersFromDb, fetchUserActivities, logUserActivity, isSuperAdminEmail, updateUserRoleInDb } from '../../lib/db';
 import { 
   ShieldCheck, 
   Users, 
@@ -20,7 +20,9 @@ import {
   BarChart3,
   Calendar,
   Layers,
-  UserPlus
+  UserPlus,
+  Zap,
+  Crown
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -42,6 +44,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState<'all' | 'vendor' | 'planner' | 'admin'>('all');
+  const [systemAnnouncement, setSystemAnnouncement] = useState('');
+  const [announcementSent, setAnnouncementSent] = useState(false);
+
+  const isCurrentSuperAdmin = isSuperAdminEmail(registeredUser?.email);
 
   useEffect(() => {
     loadData();
@@ -61,6 +67,43 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleRoleChange = async (userId: string, targetEmail: string, newRole: UserRole) => {
+    try {
+      await updateUserRoleInDb(userId, newRole);
+      setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole } : u));
+      if (registeredUser?.email) {
+        await logUserActivity(
+          registeredUser.email, 
+          'Super Admin Updated Role', 
+          `Changed role for ${targetEmail} to ${newRole}`, 
+          'admin', 
+          registeredUser.id
+        );
+      }
+      loadData();
+    } catch (err) {
+      console.error('Failed to change role:', err);
+    }
+  };
+
+  const handlePublishAnnouncement = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!systemAnnouncement.trim() || !registeredUser?.email) return;
+
+    await logUserActivity(
+      registeredUser.email,
+      'Super Admin System Announcement',
+      systemAnnouncement,
+      'admin',
+      registeredUser.id
+    );
+
+    setAnnouncementSent(true);
+    setSystemAnnouncement('');
+    setTimeout(() => setAnnouncementSent(false), 3000);
+    loadData();
   };
 
   // Metrics Calculations
@@ -89,33 +132,59 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     <div className="space-y-6 animate-in fade-in duration-300">
       
       {/* Header Banner */}
-      <div className="p-6 rounded-3xl bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-900 text-white shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-slate-800">
-        <div>
+      <div className="p-6 rounded-3xl bg-gradient-to-r from-purple-950 via-slate-900 to-indigo-950 text-white shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-purple-800/60 relative overflow-hidden">
+        
+        <div className="space-y-1 relative z-10">
           <div className="flex items-center space-x-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] font-black uppercase tracking-wider border border-indigo-500/30 flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Master Admin Control Center</span>
+            <span className="px-2.5 py-0.5 rounded-full bg-purple-500/25 text-purple-300 text-[10px] font-black uppercase tracking-wider border border-purple-500/40 flex items-center gap-1">
+              <Crown className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+              <span>Super Admin Portal</span>
             </span>
             <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-black uppercase tracking-wider border border-emerald-500/30 flex items-center gap-1">
               <Database className="w-3 h-3 text-emerald-400" />
-              <span>Neon DB Live</span>
+              <span>Neon PostgreSQL Synced</span>
             </span>
           </div>
-          <h2 className="text-2xl font-black tracking-tight mt-1">Plazr Ecosystem Overseer</h2>
-          <p className="text-xs text-slate-400 font-medium mt-0.5">
-            Monitor GMV, user accounts, market occupancy, compliance vetting, and system audit logs
+          <h2 className="text-2xl font-black tracking-tight flex items-center gap-2">
+            <span>Plazr Ecosystem Master Console</span>
+          </h2>
+          <p className="text-xs text-purple-200/80 font-medium">
+            Authorized Super Admins: <strong>mraaziqp@gmail.com</strong> &amp; <strong>raziashade4@gmail.com</strong>
           </p>
         </div>
 
         <button
           onClick={loadData}
           disabled={isLoading}
-          className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-xs flex items-center space-x-2 border border-slate-700 shadow-md transition-all"
+          className="px-4 py-2.5 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-white font-extrabold text-xs flex items-center space-x-2 border border-purple-700 shadow-md transition-all relative z-10"
         >
-          <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-emerald-400' : ''}`} />
+          <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-amber-300' : ''}`} />
           <span>Refresh Neon DB</span>
         </button>
       </div>
+
+      {/* Super Admin Announcement Publisher */}
+      <form onSubmit={handlePublishAnnouncement} className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center gap-3">
+        <div className="flex items-center space-x-2 shrink-0">
+          <div className="p-2 rounded-xl bg-purple-100 text-purple-800 font-bold text-xs flex items-center gap-1">
+            <Zap className="w-4 h-4 text-purple-700" />
+            <span>Broadcast Platform Alert</span>
+          </div>
+        </div>
+        <input
+          type="text"
+          placeholder="Publish instant system alert to all vendors & organisers..."
+          value={systemAnnouncement}
+          onChange={(e) => setSystemAnnouncement(e.target.value)}
+          className="flex-1 px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500 w-full"
+        />
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-xl bg-purple-950 hover:bg-purple-900 text-white text-xs font-black shrink-0 transition-all shadow-xs"
+        >
+          {announcementSent ? '✓ Broadcast Published' : 'Publish Alert'}
+        </button>
+      </form>
 
       {/* Tabs */}
       <div className="flex items-center space-x-2 border-b border-slate-200 pb-2 overflow-x-auto">
@@ -140,7 +209,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           }`}
         >
           <Users className="w-3.5 h-3.5 text-indigo-600" />
-          <span>User Accounts ({users.length})</span>
+          <span>User Account Control ({users.length})</span>
         </button>
 
         <button
@@ -184,7 +253,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <p className="text-2xl font-black text-slate-900">
                 R {totalGMVZar.toLocaleString('en-ZA', { maximumFractionDigits: 0 })}
               </p>
-              <span className="text-[11px] text-emerald-700 font-bold">Processed via PayFast & Wallet</span>
+              <span className="text-[11px] text-emerald-700 font-bold">Processed via PayFast &amp; Wallet</span>
             </div>
 
             {/* Platform Fees */}
@@ -229,30 +298,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
           {/* Quick System Status Panel */}
           <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-4">
-            <h3 className="text-base font-black text-slate-900 border-b border-slate-100 pb-3">Ecosystem Health & Operational Control</h3>
+            <h3 className="text-base font-black text-slate-900 border-b border-slate-100 pb-3">Super Admin System Controls</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-1">
                 <div className="flex items-center space-x-2 text-emerald-800 text-xs font-extrabold">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>Neon DB Status</span>
+                  <span>Neon DB Connection</span>
                 </div>
-                <p className="text-xs text-slate-600">PostgreSQL serverless cluster healthy in eu-west-2 (AWS London).</p>
+                <p className="text-xs text-slate-600">PostgreSQL serverless cluster active in eu-west-2 (AWS London).</p>
               </div>
 
               <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-200 space-y-1">
                 <div className="flex items-center space-x-2 text-indigo-800 text-xs font-extrabold">
                   <ShieldCheck className="w-4 h-4 text-indigo-600" />
-                  <span>Municipal Bylaw Vetting</span>
+                  <span>Super Admin Designation</span>
                 </div>
-                <p className="text-xs text-slate-600">Certificate of Acceptability & Fire Safety clearance active for 94% of vendors.</p>
+                <p className="text-xs text-slate-600">mraaziqp@gmail.com &amp; raziashade4@gmail.com active super administrators.</p>
               </div>
 
               <div className="p-4 rounded-2xl bg-purple-50 border border-purple-200 space-y-1">
                 <div className="flex items-center space-x-2 text-purple-800 text-xs font-extrabold">
-                  <Sparkles className="w-4 h-4 text-purple-600" />
-                  <span>Early Access Drop System</span>
+                  <Crown className="w-4 h-4 text-amber-500 fill-amber-500" />
+                  <span>Full Role Management</span>
                 </div>
-                <p className="text-xs text-slate-600">48-hour priority window enabled for VIP vendors & market subscribers.</p>
+                <p className="text-xs text-slate-600">1-click user promotion &amp; vetting status override in User Accounts tab.</p>
               </div>
             </div>
           </div>
@@ -273,7 +342,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   placeholder="Search users by name, email, or business..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
 
@@ -282,7 +351,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <select
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value as any)}
-                  className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold bg-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
                   <option value="all">All Roles ({users.length})</option>
                   <option value="vendor">Vendors</option>
@@ -297,8 +366,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-slate-200 text-[11px] font-black uppercase text-slate-400 bg-slate-50/50">
-                    <th className="py-3 px-3">User & Contact</th>
-                    <th className="py-3 px-3">Role</th>
+                    <th className="py-3 px-3">User &amp; Contact</th>
+                    <th className="py-3 px-3">Role &amp; Override</th>
                     <th className="py-3 px-3">Business / Organization</th>
                     <th className="py-3 px-3">Region</th>
                     <th className="py-3 px-3">Registered At</th>
@@ -312,32 +381,49 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </td>
                     </tr>
                   ) : (
-                    filteredUsers.map(u => (
-                      <tr key={u.id} className="hover:bg-slate-50/80 transition-colors">
-                        <td className="py-3 px-3">
-                          <div className="font-extrabold text-slate-900">{u.fullName}</div>
-                          <div className="text-[11px] text-slate-500">{u.email} • {u.phone || 'No phone'}</div>
-                        </td>
-                        <td className="py-3 px-3">
-                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${
-                            u.role === 'admin' ? 'bg-purple-100 text-purple-900 border-purple-300' :
-                            u.role === 'planner' ? 'bg-indigo-100 text-indigo-900 border-indigo-300' :
-                            'bg-amber-100 text-amber-900 border-amber-300'
-                          }`}>
-                            {u.role}
-                          </span>
-                        </td>
-                        <td className="py-3 px-3 font-semibold text-slate-800">
-                          {u.businessOrOrgName || 'N/A'}
-                        </td>
-                        <td className="py-3 px-3 text-slate-600 font-medium">
-                          {u.city}
-                        </td>
-                        <td className="py-3 px-3 text-slate-400 text-[11px]">
-                          {new Date(u.registeredAt).toLocaleDateString()}
-                        </td>
-                      </tr>
-                    ))
+                    filteredUsers.map(u => {
+                      const isTargetSuperAdmin = isSuperAdminEmail(u.email);
+                      return (
+                        <tr key={u.id} className="hover:bg-slate-50/80 transition-colors">
+                          <td className="py-3 px-3">
+                            <div className="font-extrabold text-slate-900 flex items-center gap-1.5">
+                              <span>{u.fullName}</span>
+                              {isTargetSuperAdmin && (
+                                <span className="px-1.5 py-0.5 rounded bg-purple-100 text-purple-900 border border-purple-300 font-black text-[9px] flex items-center gap-0.5">
+                                  <Crown className="w-3 h-3 text-amber-500 fill-amber-500" />
+                                  <span>Super Admin</span>
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[11px] text-slate-500">{u.email} • {u.phone || 'No phone'}</div>
+                          </td>
+                          <td className="py-3 px-3">
+                            <select
+                              value={u.role}
+                              onChange={(e) => handleRoleChange(u.id, u.email, e.target.value as UserRole)}
+                              className={`px-2.5 py-1 rounded-xl text-xs font-black border transition-all ${
+                                u.role === 'admin' ? 'bg-purple-100 text-purple-900 border-purple-300' :
+                                u.role === 'planner' ? 'bg-indigo-100 text-indigo-900 border-indigo-300' :
+                                'bg-amber-100 text-amber-900 border-amber-300'
+                              }`}
+                            >
+                              <option value="vendor">Vendor</option>
+                              <option value="planner">Organiser</option>
+                              <option value="admin">Admin</option>
+                            </select>
+                          </td>
+                          <td className="py-3 px-3 font-semibold text-slate-800">
+                            {u.businessOrOrgName || 'N/A'}
+                          </td>
+                          <td className="py-3 px-3 text-slate-600 font-medium">
+                            {u.city}
+                          </td>
+                          <td className="py-3 px-3 text-slate-400 text-[11px]">
+                            {new Date(u.registeredAt).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>
@@ -359,7 +445,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     Real-Time Stream
                   </span>
                 </h3>
-                <p className="text-xs text-slate-500 font-medium">Audit logs automatically captured from user interactions & Neon database operations</p>
+                <p className="text-xs text-slate-500 font-medium">Audit logs automatically captured from user interactions &amp; Neon database operations</p>
               </div>
 
               <button
@@ -397,7 +483,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {activeTab === 'markets' && (
         <div className="space-y-4 animate-in slide-in-from-right duration-200">
           <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-4">
-            <h3 className="text-base font-black text-slate-900 border-b border-slate-100 pb-3">Active Street Markets & Event Listings</h3>
+            <h3 className="text-base font-black text-slate-900 border-b border-slate-100 pb-3">Active Street Markets &amp; Event Listings</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {markets.map(m => (

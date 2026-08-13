@@ -29,6 +29,7 @@ import {
   EyeOff,
   Loader2,
   Database,
+  ShieldCheck,
   Sparkles as SparkleIcon
 } from 'lucide-react';
 
@@ -248,6 +249,32 @@ export const RegisterAuthModal: React.FC<RegisterAuthModalProps> = ({
                   <span>{formError}</span>
                 </div>
               )}
+
+              {/* Super Admin Quick Access Panel */}
+              <div className="p-3 rounded-2xl bg-purple-50 border border-purple-200 text-purple-900 space-y-2">
+                <div className="flex items-center justify-between text-xs font-black">
+                  <span className="flex items-center gap-1.5 text-purple-900">
+                    <ShieldCheck className="w-4 h-4 text-purple-700" />
+                    <span>Super Admin Instant Sign-In</span>
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => { setEmail('mraaziqp@gmail.com'); setPassword('admin123'); }}
+                    className="px-3 py-1.5 rounded-xl bg-purple-950 text-white text-[11px] font-extrabold hover:bg-purple-900 transition-colors shadow-xs flex items-center gap-1"
+                  >
+                    <span>⚡ mraaziqp@gmail.com</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setEmail('raziashade4@gmail.com'); setPassword('admin123'); }}
+                    className="px-3 py-1.5 rounded-xl bg-purple-950 text-white text-[11px] font-extrabold hover:bg-purple-900 transition-colors shadow-xs flex items-center gap-1"
+                  >
+                    <span>⚡ raziashade4@gmail.com</span>
+                  </button>
+                </div>
+              </div>
 
               <div className="space-y-3">
                 <div className="space-y-1">

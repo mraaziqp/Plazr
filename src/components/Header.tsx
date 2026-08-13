@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { UserRole, VendorProfile, NotificationItem, RegisteredUser } from '../types';
+import { isSuperAdminEmail } from '../lib/db';
 import { 
   Store, 
   LayoutDashboard, 
@@ -25,7 +26,8 @@ import {
   Flame,
   User,
   ArrowRight,
-  LogOut
+  LogOut,
+  Crown
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -87,6 +89,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   // Check if user is registered as an organiser
   const isOrganiser = registeredUser?.role === 'planner';
+  const isSuperAdmin = isSuperAdminEmail(registeredUser?.email);
 
   // Check if any required document is expiring or expired
   const hasExpiringDoc = vendorProfile.documents.some(
@@ -316,6 +319,18 @@ export const Header: React.FC<HeaderProps> = ({
                   </span>
                 )}
               </button>
+
+              {/* Super Admin Shortcut Button */}
+              {(isSuperAdmin || registeredUser?.role === 'admin') && (
+                <button
+                  onClick={() => onRoleChange('admin')}
+                  className="flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-black bg-gradient-to-r from-purple-950 to-indigo-900 text-white border border-purple-400 shadow-sm hover:scale-105 transition-all"
+                  title="Open Super Admin Console (mraaziqp@gmail.com & raziashade4@gmail.com)"
+                >
+                  <Crown className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                  <span>Super Admin</span>
+                </button>
+              )}
 
               {/* Document Status Pill */}
               <button

@@ -1,6 +1,16 @@
 import { neon } from '@neondatabase/serverless';
 import { RegisteredUser, UserRole, UserActivityLog } from '../types';
 
+export const SUPER_ADMIN_EMAILS = [
+  'mraaziqp@gmail.com',
+  'raziashade4@gmail.com'
+];
+
+export function isSuperAdminEmail(email?: string): boolean {
+  if (!email) return false;
+  return SUPER_ADMIN_EMAILS.includes(email.toLowerCase().trim());
+}
+
 // Obtain the Neon database URL from environment variables
 const dbUrl = (import.meta as any).env?.VITE_DATABASE_URL || 'postgresql://neondb_owner:npg_OE1Xqvgy3bnD@ep-polished-night-za5la761.c-2.eu-west-2.aws.neon.tech/neondb?sslmode=require';
 
@@ -103,7 +113,7 @@ export async function fetchAllUsersFromDb(): Promise<RegisteredUser[]> {
       id: r.id,
       fullName: r.full_name,
       email: r.email,
-      role: r.role as UserRole,
+      role: isSuperAdminEmail(r.email) ? 'admin' : (r.role as UserRole),
       businessOrOrgName: r.business_or_org_name,
       categoryOrVenue: r.category_or_venue,
       city: r.city,
@@ -114,6 +124,16 @@ export async function fetchAllUsersFromDb(): Promise<RegisteredUser[]> {
   } catch (err) {
     console.warn('Failed to fetch users from Neon:', err);
     return [];
+  }
+}
+
+// Update user role in Neon DB
+export async function updateUserRoleInDb(userId: string, newRole: UserRole): Promise<void> {
+  try {
+    await initDb();
+    await sql`UPDATE users SET role = ${newRole} WHERE id = ${userId};`;
+  } catch (err) {
+    console.error('Failed to update user role in Neon DB:', err);
   }
 }
 
@@ -132,7 +152,6 @@ export async function registerUser(userData: {
   await initDb();
   
   const id = 'usr_' + Math.random().toString(36).substring(2, 11) + Date.now().toString(36);
-  // Basic encode for client demo security layer
   const passwordHash = btoa(userData.password);
 
   const existing = await sql`
@@ -143,6 +162,8 @@ export async function registerUser(userData: {
     throw new Error('An account with this email already exists.');
   }
 
+  // Force Super Admin role for designated email addresses
+  const assignedRole: UserRole = isSuperAdminEmail(userData.email) ? 'admin' : userData.role;
   const interestsJson = JSON.stringify(userData.interests || []);
 
   const result = await sql`
@@ -154,7 +175,7 @@ export async function registerUser(userData: {
       ${userData.email.toLowerCase()},
       ${passwordHash},
       ${userData.fullName},
-      ${userData.role},
+      ${assignedRole},
       ${userData.businessOrOrgName || ''},
       ${userData.categoryOrVenue || ''},
       ${userData.city || 'Cape Town & Winelands'},
@@ -202,11 +223,14 @@ export async function loginUser(email: string, password: string): Promise<Regist
     throw new Error('Incorrect password. Please try again.');
   }
 
+  // Force Super Admin role if email matches super admin list
+  const userRole: UserRole = isSuperAdminEmail(row.email) ? 'admin' : (row.role as UserRole);
+
   const loggedUser: RegisteredUser = {
     id: row.id,
     fullName: row.full_name,
     email: row.email,
-    role: row.role as UserRole,
+    role: userRole,
     businessOrOrgName: row.business_or_org_name,
     categoryOrVenue: row.category_or_venue,
     city: row.city,

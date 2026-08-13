@@ -46,6 +46,7 @@ import { StallPicker } from './components/vendor/StallPicker';
 import { VendorApplicationsList } from './components/vendor/VendorApplicationsList';
 import { SalesDashboard } from './components/vendor/SalesDashboard';
 import { AdminDashboard } from './components/admin/AdminDashboard';
+import { isSuperAdminEmail } from './lib/db';
 
 import { ApplicantSwipeDashboard } from './components/planner/ApplicantSwipeDashboard';
 import { FloorPlanManager } from './components/planner/FloorPlanManager';
@@ -140,7 +141,7 @@ export default function App() {
 
   // Role Protection Guard: Restrict Organiser Dashboard unless explicitly registered as an organiser
   useEffect(() => {
-    if (activeRole === 'planner' && registeredUser?.role !== 'planner') {
+    if (activeRole === 'planner' && registeredUser?.role !== 'planner' && registeredUser?.role !== 'admin') {
       setActiveRole('vendor');
     }
   }, [activeRole, registeredUser]);
@@ -150,11 +151,12 @@ export default function App() {
     try {
       const saved = localStorage.getItem('plazr_user');
       if (saved) {
-        const parsedUser: RegisteredUser = JSON.parse(saved);
-        setRegisteredUser(parsedUser);
-        if (parsedUser.role) {
-          setActiveRole(parsedUser.role);
+        let parsedUser: RegisteredUser = JSON.parse(saved);
+        if (isSuperAdminEmail(parsedUser.email)) {
+          parsedUser = { ...parsedUser, role: 'admin' };
         }
+        setRegisteredUser(parsedUser);
+        setActiveRole(parsedUser.role || 'vendor');
         setVendorProfile(prev => ({
           ...prev,
           ownerName: parsedUser.fullName || prev.ownerName,
@@ -172,14 +174,19 @@ export default function App() {
   }, []);
 
   const handleRegisterComplete = (user: RegisteredUser) => {
-    setRegisteredUser(user);
+    let activeUser = user;
+    if (isSuperAdminEmail(user.email)) {
+      activeUser = { ...user, role: 'admin' };
+    }
+
+    setRegisteredUser(activeUser);
     try {
-      localStorage.setItem('plazr_user', JSON.stringify(user));
+      localStorage.setItem('plazr_user', JSON.stringify(activeUser));
     } catch (err) {
       console.error('Error saving user session:', err);
     }
 
-    setActiveRole(user.role);
+    setActiveRole(activeUser.role);
 
     setVendorProfile(prev => ({
       ...prev,
