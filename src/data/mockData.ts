@@ -1,17 +1,17 @@
 import { VendorProfile, MarketEvent, VendorApplication, ChatThread, NotificationItem, WalletTransaction, MarketDropTeaser, FeaturedVendorSpotlight } from '../types';
 
 export const INITIAL_VENDOR_PROFILE: VendorProfile = {
-  id: 'vendor-001',
-  businessName: "Bo-Kaap Gourmet Bunny Chow & Artisanal Sliders",
-  ownerName: "Zainab Hendricks",
-  email: "zainab@bokaapgourmet.co.za",
-  phone: "+27 82 491 8820",
+  id: 'guest-001',
+  businessName: "Plazr Market Vendor",
+  ownerName: "Guest Account",
+  email: "",
+  phone: "",
   category: '#ArtisanalFood',
-  bio: "Authentic Durban-style spice blends, gourmet lamb bunny chow, and hand-pressed wagyu sliders crafted fresh in Cape Town.",
-  avatar: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=400&auto=format&fit=crop&q=80",
-  vettingStatus: 'vetted',
-  vettingFeePaid: true,
-  powerRequirementKw: 4.0, // High-draw heavy griddle & commercial fryer
+  bio: "Welcome to Plazr SA. Create an account or sign in to customize your profile, manage market stall applications, and view real-time market sales.",
+  avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
+  vettingStatus: 'unvetted',
+  vettingFeePaid: false,
+  powerRequirementKw: 2.0,
   documents: [
     {
       id: 'doc-001',
@@ -686,7 +686,7 @@ export const INITIAL_APPLICATIONS: VendorApplication[] = [
     coverImage: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=800&auto=format&fit=crop&q=80',
     eventDate: '2026-09-12',
     vendorId: 'vendor-001',
-    vendorName: "Bo-Kaap Gourmet Bunny Chow & Artisanal Sliders",
+    vendorName: "Plazr Market Vendor",
     vendorCategory: '#ArtisanalFood',
     selectedSpotId: 'SPOT-A1',
     selectedSpotZone: 'Corner Spot (3x3m)',
@@ -709,7 +709,7 @@ export const INITIAL_APPLICATIONS: VendorApplication[] = [
     coverImage: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop&q=80',
     eventDate: '2026-09-25',
     vendorId: 'vendor-001',
-    vendorName: "Bo-Kaap Gourmet Bunny Chow & Artisanal Sliders",
+    vendorName: "Plazr Market Vendor",
     vendorCategory: '#ArtisanalFood',
     selectedSpotId: 'CC-01',
     selectedSpotZone: 'Corner Spot (3x3m)',

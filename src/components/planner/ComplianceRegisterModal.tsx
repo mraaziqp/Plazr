@@ -36,8 +36,8 @@ export const ComplianceRegisterModal: React.FC<ComplianceRegisterModalProps> = (
   // Map application details with full vendor document profiles
   const complianceRecords = approvedApplications.map((app) => {
     const profile = vendorProfiles.find(v => v.id === app.vendorId) || {
-      ownerName: 'Zainab Hendricks',
-      phone: '+27 82 491 8820',
+      ownerName: app.vendorName || 'Registered Vendor',
+      phone: '+27 82 000 0000',
       documents: [
         { title: 'CoA', code: 'COA-CT-2026', expiryDate: '2026-11-30', status: 'valid' },
         { title: 'Gas Cert', code: 'GAS-SA-8821', expiryDate: '2026-10-15', status: 'valid' },
