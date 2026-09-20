@@ -169,29 +169,35 @@ export const WalletModal: React.FC<WalletModalProps> = ({
               Recent Transactions
             </h4>
             <div className="space-y-2">
-              {transactions.map((tx) => (
-                <div
-                  key={tx.id}
-                  className="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-200 text-xs shadow-2xs"
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-lg ${
-                      tx.type === 'credit'
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                        : 'bg-rose-50 text-rose-700 border border-rose-200'
-                    }`}>
-                      {tx.type === 'credit' ? <ArrowDownLeft className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
-                    </div>
-                    <div>
-                      <p className="font-extrabold text-slate-900">{tx.description}</p>
-                      <p className="text-[10px] text-slate-500 font-medium">{tx.date} • Ref: {tx.reference}</p>
-                    </div>
-                  </div>
-                  <span className={`font-black ${tx.type === 'credit' ? 'text-emerald-700' : 'text-slate-900'}`}>
-                    {tx.type === 'credit' ? '+' : ''}R {Math.abs(tx.amountZar).toLocaleString('en-ZA', { minimumFractionDigits: 2 })}
-                  </span>
+              {transactions.length === 0 ? (
+                <div className="p-5 rounded-xl bg-white border border-slate-200 text-center text-xs text-slate-500 font-medium shadow-2xs">
+                  No wallet transactions recorded yet. Deposits and payouts will appear here.
                 </div>
-              ))}
+              ) : (
+                transactions.map((tx) => (
+                  <div
+                    key={tx.id}
+                    className="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-200 text-xs shadow-2xs"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className={`p-2 rounded-lg ${
+                        tx.type === 'credit'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : 'bg-rose-50 text-rose-700 border border-rose-200'
+                      }`}>
+                        {tx.type === 'credit' ? <ArrowDownLeft className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
+                      </div>
+                      <div>
+                        <p className="font-extrabold text-slate-900">{tx.description}</p>
+                        <p className="text-[10px] text-slate-500 font-medium">{tx.date} • Ref: {tx.reference}</p>
+                      </div>
+                    </div>
+                    <span className={`font-black ${tx.type === 'credit' ? 'text-emerald-700' : 'text-slate-900'}`}>
+                      {tx.type === 'credit' ? '+' : ''}R {Math.abs(tx.amountZar).toLocaleString('en-ZA', { minimumFractionDigits: 2 })}
+                    </span>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 

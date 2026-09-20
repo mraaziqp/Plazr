@@ -86,12 +86,33 @@ export default function App() {
   const [activeRole, setActiveRole] = useState<UserRole>('vendor');
   const [vendorProfile, setVendorProfile] = useState<VendorProfile>(INITIAL_VENDOR_PROFILE);
   const [markets, setMarkets] = useState<MarketEvent[]>(INITIAL_MARKETS);
-  const [applications, setApplications] = useState<VendorApplication[]>(INITIAL_APPLICATIONS);
+  const [applications, setApplications] = useState<VendorApplication[]>(() => {
+    try {
+      const saved = localStorage.getItem('plazr_applications');
+      return saved ? JSON.parse(saved) : INITIAL_APPLICATIONS;
+    } catch {
+      return INITIAL_APPLICATIONS;
+    }
+  });
   const [applicantQueue, setApplicantQueue] = useState<VendorProfile[]>(INITIAL_APPLICANT_QUEUE);
   const [chatThreads, setChatThreads] = useState<ChatThread[]>(INITIAL_CHAT_THREADS);
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
-  const [walletTransactions, setWalletTransactions] = useState<WalletTransaction[]>(INITIAL_WALLET_TRANSACTIONS);
-  const [walletBalanceZar, setWalletBalanceZar] = useState<number>(2850.00);
+  const [walletTransactions, setWalletTransactions] = useState<WalletTransaction[]>(() => {
+    try {
+      const saved = localStorage.getItem('plazr_wallet_transactions');
+      return saved ? JSON.parse(saved) : INITIAL_WALLET_TRANSACTIONS;
+    } catch {
+      return INITIAL_WALLET_TRANSACTIONS;
+    }
+  });
+  const [walletBalanceZar, setWalletBalanceZar] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('plazr_wallet_balance');
+      return saved !== null ? parseFloat(saved) : 0.00;
+    } catch {
+      return 0.00;
+    }
+  });
 
   // Vendor Active Tab: 'discovery' | 'applications' | 'sales' | 'vault'
   const [vendorActiveTab, setVendorActiveTab] = useState<'discovery' | 'applications' | 'sales' | 'vault'>('discovery');
@@ -172,6 +193,31 @@ export default function App() {
       console.error('Error restoring user session:', err);
     }
   }, []);
+ 
+  // Synchronize dynamic customer state to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('plazr_wallet_balance', walletBalanceZar.toString());
+    } catch (e) {
+      console.error('Error saving wallet balance:', e);
+    }
+  }, [walletBalanceZar]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('plazr_applications', JSON.stringify(applications));
+    } catch (e) {
+      console.error('Error saving applications:', e);
+    }
+  }, [applications]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('plazr_wallet_transactions', JSON.stringify(walletTransactions));
+    } catch (e) {
+      console.error('Error saving wallet transactions:', e);
+    }
+  }, [walletTransactions]);
 
   const handleRegisterComplete = (user: RegisteredUser) => {
     let activeUser = user;
@@ -1171,7 +1217,10 @@ export default function App() {
             {plannerActiveTab === 'revenue' && (
               <RevenueAnalytics
                 market={activePlannerMarket}
-                totalGrossRentZar={42500.00}
+                totalGrossRentZar={applications
+                  .filter(a => a.marketId === activePlannerMarket.id && (a.status === 'paid_and_confirmed' || a.status === 'confirmed'))
+                  .reduce((sum, a) => sum + (a.feeBreakdown?.baseStallFeeZar || 0), 0)
+                }
                 onOpenPerformance={() => setSelectedMarketForPerformance(activePlannerMarket)}
               />
             )}

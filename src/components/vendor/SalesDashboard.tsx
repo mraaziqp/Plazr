@@ -62,8 +62,8 @@ export const SalesDashboard: React.FC<SalesDashboardProps> = ({
   };
 
   // Calculate metrics
-  const confirmedApps = applications.filter(a => a.status === 'confirmed' || a.status === 'checked_in');
-  const totalStallSpentZar = confirmedApps.reduce((acc, a) => acc + (a.feeBreakdown?.totalZar || 1250), 0);
+  const confirmedApps = applications.filter(a => a.status === 'confirmed' || a.status === 'checked_in' || a.status === 'paid_and_confirmed');
+  const totalStallSpentZar = confirmedApps.reduce((acc, a) => acc + (a.feeBreakdown?.totalZar || 0), 0);
   const estimatedGrossSalesZar = totalStallSpentZar * 4.8; // Average 4.8x ROI per stall in street markets
   const avgSalesPerMarketZar = confirmedApps.length > 0 ? estimatedGrossSalesZar / confirmedApps.length : 0;
 
@@ -223,27 +223,26 @@ export const SalesDashboard: React.FC<SalesDashboardProps> = ({
               <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">2026 Financial Year</span>
             </div>
 
-            <div className="space-y-3 pt-2">
-              {[
-                { month: 'September 2026', gross: 24500, stalls: 4, barPct: '85%' },
-                { month: 'August 2026', gross: 18200, stalls: 3, barPct: '65%' },
-                { month: 'July 2026', gross: 14800, stalls: 2, barPct: '50%' },
-                { month: 'June 2026', gross: 11000, stalls: 2, barPct: '40%' }
-              ].map(item => (
-                <div key={item.month} className="space-y-1.5">
+            {confirmedApps.length === 0 ? (
+              <div className="text-center py-8 text-xs text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                No market earnings recorded yet. Once your stall applications are confirmed and you begin trading at markets, your monthly revenue metrics and performance benchmarks will appear here.
+              </div>
+            ) : (
+              <div className="space-y-3 pt-2">
+                <div className="space-y-1.5">
                   <div className="flex items-center justify-between text-xs font-bold">
-                    <span className="text-slate-800">{item.month} ({item.stalls} Markets)</span>
-                    <span className="text-emerald-700 font-black">R {item.gross.toLocaleString()}</span>
+                    <span className="text-slate-800">Current Period ({confirmedApps.length} Markets Booked)</span>
+                    <span className="text-emerald-700 font-black">R {estimatedGrossSalesZar.toLocaleString()}</span>
                   </div>
                   <div className="w-full h-3 rounded-full bg-slate-100 overflow-hidden">
                     <div 
                       className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 transition-all duration-500"
-                      style={{ width: item.barPct }}
+                      style={{ width: '100%' }}
                     />
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
 
         </div>
@@ -268,27 +267,37 @@ export const SalesDashboard: React.FC<SalesDashboardProps> = ({
             </div>
 
             <div className="divide-y divide-slate-100">
-              {walletTransactions.map(tx => (
-                <div key={tx.id} className="py-3 flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-xl ${tx.type === 'payout' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'}`}>
-                      {tx.type === 'payout' ? <ArrowUpRight className="w-4 h-4" /> : <CreditCard className="w-4 h-4" />}
-                    </div>
-                    <div>
-                      <p className="font-extrabold text-slate-900">{tx.description}</p>
-                      <p className="text-[11px] text-slate-400 font-medium">{tx.date} • Reference: {tx.reference}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className={`font-black text-sm ${tx.type === 'payout' ? 'text-emerald-600' : 'text-slate-900'}`}>
-                      {tx.type === 'payout' ? '+' : '-'} R {tx.amount.toLocaleString()}
-                    </p>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
-                      {tx.status}
-                    </span>
-                  </div>
+              {walletTransactions.length === 0 ? (
+                <div className="text-center py-8 text-xs text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                  No wallet transactions recorded yet. When you book a stall or top up your wallet, records will appear here.
                 </div>
-              ))}
+              ) : (
+                walletTransactions.map(tx => {
+                  const isCredit = tx.type === 'credit' || (tx.type as string) === 'payout';
+                  const amount = Math.abs(tx.amountZar ?? (tx as any).amount ?? 0);
+                  return (
+                    <div key={tx.id} className="py-3 flex items-center justify-between text-xs">
+                      <div className="flex items-center space-x-3">
+                        <div className={`p-2 rounded-xl ${isCredit ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'}`}>
+                          {isCredit ? <ArrowUpRight className="w-4 h-4" /> : <CreditCard className="w-4 h-4" />}
+                        </div>
+                        <div>
+                          <p className="font-extrabold text-slate-900">{tx.description}</p>
+                          <p className="text-[11px] text-slate-400 font-medium">{tx.date} • Reference: {tx.reference}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className={`font-black text-sm ${isCredit ? 'text-emerald-600' : 'text-slate-900'}`}>
+                          {isCredit ? '+' : '-'} R {amount.toLocaleString()}
+                        </p>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                          Completed
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>

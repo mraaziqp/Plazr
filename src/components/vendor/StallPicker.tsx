@@ -66,8 +66,7 @@ export const StallPicker: React.FC<StallPickerProps> = ({
       maxPowerWatts: 3500,
       powerKw: 3.5,
       circuitId: 'circuit-1',
-      status: 'occupied',
-      occupantVendorName: 'Mama Africa Dumplings',
+      status: 'available',
       xRatio: 45,
       yRatio: 25
     },

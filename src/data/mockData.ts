@@ -2,23 +2,23 @@ import { VendorProfile, MarketEvent, VendorApplication, ChatThread, Notification
 
 export const INITIAL_VENDOR_PROFILE: VendorProfile = {
   id: 'guest-001',
-  businessName: "Plazr Market Vendor",
-  ownerName: "Guest Account",
+  businessName: "",
+  ownerName: "",
   email: "",
   phone: "",
   category: '#ArtisanalFood',
-  bio: "Welcome to Plazr SA. Create an account or sign in to customize your profile, manage market stall applications, and view real-time market sales.",
+  bio: "South African street market vendor & artisan.",
   avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
   vettingStatus: 'unvetted',
   vettingFeePaid: false,
-  powerRequirementKw: 2.0,
+  powerRequirementKw: 0.0,
   documents: [
     {
       id: 'doc-001',
       title: 'Certificate of Acceptability (CoA)',
-      code: 'COA-CT-2026',
-      expiryDate: '2026-11-30',
-      status: 'valid',
+      code: 'Pending Upload',
+      expiryDate: '',
+      status: 'pending_verification',
       issuedBy: 'City of Cape Town Health Dept',
       renewalFeeZar: 0,
       requiredForCategories: ['#ArtisanalFood', '#Halal', '#Vegan']
@@ -26,9 +26,9 @@ export const INITIAL_VENDOR_PROFILE: VendorProfile = {
     {
       id: 'doc-002',
       title: 'LPG Gas Safety Certificate',
-      code: 'GAS-SA-8821',
-      expiryDate: '2026-08-20', // EXPIRES BEFORE SEPT 12, 2026!
-      status: 'expiring_soon',
+      code: 'Pending Upload',
+      expiryDate: '',
+      status: 'pending_verification',
       issuedBy: 'Liquefied Petroleum Gas Assoc. of SA (LPGASA)',
       renewalFeeZar: 0,
       requiredForCategories: ['#ArtisanalFood', '#Halal']
@@ -36,51 +36,47 @@ export const INITIAL_VENDOR_PROFILE: VendorProfile = {
     {
       id: 'doc-003',
       title: 'Public Liability Insurance (R5,000,000 Cover)',
-      code: 'PLI-MUTUAL-994',
-      expiryDate: '2027-02-15',
-      status: 'valid',
-      issuedBy: 'Old Mutual Specialty Insurance',
+      code: 'Pending Upload',
+      expiryDate: '',
+      status: 'pending_verification',
+      issuedBy: 'Old Mutual / Santam / Mutual & Federal',
       renewalFeeZar: 0,
       requiredForCategories: ['#ArtisanalFood', '#GeekCulture', '#VintageFashion', '#Crafts', '#Halal', '#Vegan']
     },
     {
       id: 'doc-004',
       title: 'Fire Safety & Extinguisher Clearance',
-      code: 'FIRE-CPT-440',
-      expiryDate: '2026-10-15',
-      status: 'valid',
-      issuedBy: 'Cape Town Fire & Rescue Service',
+      code: 'Pending Upload',
+      expiryDate: '',
+      status: 'pending_verification',
+      issuedBy: 'Municipal Fire & Rescue Service',
       renewalFeeZar: 0,
       requiredForCategories: ['#ArtisanalFood', '#Halal']
     }
   ],
   socialReach: {
-    instagramFollowers: 14200,
-    tiktokFollowers: 22800,
-    facebookFollowers: 5600,
-    totalReach: 42600,
-    instagramHandle: '@bokaapgourmet'
+    instagramFollowers: 0,
+    tiktokFollowers: 0,
+    facebookFollowers: 0,
+    totalReach: 0,
+    instagramHandle: ''
   },
   reliabilityIndex: {
-    rating: 4.9,
-    onTimeSetupPercent: 98,
-    cleanlinessScore: 4.95,
-    totalMarketsCompleted: 42
+    rating: 5.0,
+    onTimeSetupPercent: 100,
+    cleanlinessScore: 5.0,
+    totalMarketsCompleted: 0
   },
-  galleryImages: [
-    "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&auto=format&fit=crop&q=80"
-  ],
+  galleryImages: [],
   subscriptionTier: 'free',
   isVipSubscriber: false,
   locationPreferences: {
-    baseAddress: '124 Wale Street, Bo-Kaap',
+    baseAddress: '',
     baseCity: 'Cape Town',
-    baseSuburb: 'Bo-Kaap & City Centre',
-    operatingCities: ['Cape Town', 'Stellenbosch', 'Johannesburg'],
-    preferredZones: ['Woodstock & Salt River', 'Bo-Kaap & City Centre', 'Sea Point & Atlantic Seaboard', 'Stellenbosch Winelands'],
-    maxTravelDistanceKm: 60,
+    baseSuburb: 'City Centre',
+    operatingCities: ['Cape Town', 'Stellenbosch', 'Johannesburg', 'Durban'],
+    preferredZones: ['Woodstock & Salt River', 'Bo-Kaap & City Centre', 'Sea Point & Atlantic Seaboard'],
+    maxTravelDistanceKm: 50,
     preferredMarketTypes: ['Weekend Street Markets', 'Night Food Festivals', 'Artisanal Indoor Halls', 'Coastal Pop-ups']
   }
 };
@@ -131,9 +127,9 @@ export const INITIAL_MARKETS: MarketEvent[] = [
       type: '45 kVA Silent Diesel Generator + 15kW Victron Hybrid Solar Inverter'
     },
     performance: {
-      overallRating: 4.9,
-      totalVendorReviews: 128,
-      satisfactionRatePercent: 96,
+      overallRating: 5.0,
+      totalVendorReviews: 0,
+      satisfactionRatePercent: 100,
       avgDailyVendorRevenueZar: 8450,
       footTrafficConversionRatePercent: 28,
       repeatVendorRatePercent: 91,
@@ -145,42 +141,14 @@ export const INITIAL_MARKETS: MarketEvent[] = [
         { category: '#VintageFashion', demandSharePercent: 18, avgRevenueZar: 7100 },
         { category: '#Halal', demandSharePercent: 14, avgRevenueZar: 8900 }
       ],
-      reviews: [
-        {
-          id: 'rev-1',
-          vendorName: 'Mama Africa Dumplings',
-          vendorCategory: '#ArtisanalFood',
-          rating: 5.0,
-          comment: 'Incredible foot traffic! Sold out of dombolo dumplings by 2:30 PM. Backup generator kicked in seamlessly during stage 2 loadshedding.',
-          date: 'Aug 2026',
-          dailyRevenueReportedZar: 12400
-        },
-        {
-          id: 'rev-2',
-          vendorName: 'Kirstenbosch Ceramic Studio',
-          vendorCategory: '#Crafts',
-          rating: 4.8,
-          comment: 'High quality local and tourist crowd willing to spend on botanical art. Great stall layout spacing.',
-          date: 'July 2026',
-          dailyRevenueReportedZar: 7800
-        },
-        {
-          id: 'rev-3',
-          vendorName: 'Kloof Street Vintage Threads',
-          vendorCategory: '#VintageFashion',
-          rating: 5.0,
-          comment: 'Gate check-in with QR code was so quick! Load-in slot A avoided all vehicle gridlock on Albert Rd.',
-          date: 'July 2026',
-          dailyRevenueReportedZar: 8200
-        }
-      ]
+      reviews: []
     },
     circuits: [
       {
         id: 'circuit-1',
         name: 'Zone A - Food Alley Grid',
         maxCapacityKw: 12.0,
-        currentLoadKw: 9.5,
+        currentLoadKw: 0.0,
         isOverloaded: false,
         assignedSpotIds: ['SPOT-A1', 'SPOT-A2', 'SPOT-A3']
       },
@@ -188,7 +156,7 @@ export const INITIAL_MARKETS: MarketEvent[] = [
         id: 'circuit-2',
         name: 'Zone B - Artisan & Crafts Main',
         maxCapacityKw: 8.0,
-        currentLoadKw: 4.2,
+        currentLoadKw: 0.0,
         isOverloaded: false,
         assignedSpotIds: ['SPOT-B1', 'SPOT-B2', 'SPOT-B3']
       },
@@ -196,17 +164,17 @@ export const INITIAL_MARKETS: MarketEvent[] = [
         id: 'circuit-3',
         name: 'Zone C - Fashion & Courtyard',
         maxCapacityKw: 6.0,
-        currentLoadKw: 2.1,
+        currentLoadKw: 0.0,
         isOverloaded: false,
         assignedSpotIds: ['SPOT-C1', 'SPOT-C2']
       }
     ],
     categoryQuotas: [
-      { categoryGroup: 'Food & Beverage', targetCount: 10, bookedCount: 7 },
-      { categoryGroup: 'Artisanal & Crafts', targetCount: 15, bookedCount: 9 },
-      { categoryGroup: 'Apparel & Vintage', targetCount: 12, bookedCount: 4 },
-      { categoryGroup: 'Beauty & Wellness', targetCount: 8, bookedCount: 3 },
-      { categoryGroup: 'General Retail', targetCount: 10, bookedCount: 2 }
+      { categoryGroup: 'Food & Beverage', targetCount: 10, bookedCount: 0 },
+      { categoryGroup: 'Artisanal & Crafts', targetCount: 15, bookedCount: 0 },
+      { categoryGroup: 'Apparel & Vintage', targetCount: 12, bookedCount: 0 },
+      { categoryGroup: 'Beauty & Wellness', targetCount: 8, bookedCount: 0 },
+      { categoryGroup: 'General Retail', targetCount: 10, bookedCount: 0 }
     ],
     stallGrid: [
       {
@@ -239,11 +207,7 @@ export const INITIAL_MARKETS: MarketEvent[] = [
         maxPowerWatts: 3500,
         powerKw: 3.5,
         circuitId: 'circuit-1',
-        status: 'occupied',
-        occupantVendorId: 'vendor-002',
-        occupantVendorName: 'Mama Africa Dumplings',
-        occupantCategory: '#ArtisanalFood',
-        occupantPowerKw: 3.5,
+        status: 'available',
         xRatio: 35,
         yRatio: 20
       },
@@ -290,11 +254,7 @@ export const INITIAL_MARKETS: MarketEvent[] = [
         maxPowerWatts: 1000,
         powerKw: 1.0,
         circuitId: 'circuit-2',
-        status: 'occupied',
-        occupantVendorId: 'vendor-003',
-        occupantVendorName: 'Kirstenbosch Ceramic Studio',
-        occupantCategory: '#Crafts',
-        occupantPowerKw: 1.0,
+        status: 'available',
         xRatio: 35,
         yRatio: 55
       },
@@ -382,9 +342,9 @@ export const INITIAL_MARKETS: MarketEvent[] = [
       type: '60 kVA Eco-Generator'
     },
     performance: {
-      overallRating: 4.8,
-      totalVendorReviews: 94,
-      satisfactionRatePercent: 94,
+      overallRating: 5.0,
+      totalVendorReviews: 0,
+      satisfactionRatePercent: 100,
       avgDailyVendorRevenueZar: 9200,
       footTrafficConversionRatePercent: 32,
       repeatVendorRatePercent: 88,
@@ -396,26 +356,7 @@ export const INITIAL_MARKETS: MarketEvent[] = [
         { category: '#Vegan', demandSharePercent: 20, avgRevenueZar: 7400 },
         { category: '#BeautyWellness', demandSharePercent: 10, avgRevenueZar: 5600 }
       ],
-      reviews: [
-        {
-          id: 'rev-201',
-          vendorName: 'Cape Organic Produce',
-          vendorCategory: '#LocalProduce',
-          rating: 5.0,
-          comment: 'Constant stream of loyal locals every Saturday. Highest conversion rate of any Cape Town market.',
-          date: 'July 2026',
-          dailyRevenueReportedZar: 11800
-        },
-        {
-          id: 'rev-202',
-          vendorName: 'Green Point Vegan Deli',
-          vendorCategory: '#Vegan',
-          rating: 4.7,
-          comment: 'Seafront vibe brings enthusiastic buyers. Highly organized electricity and waste disposal.',
-          date: 'June 2026',
-          dailyRevenueReportedZar: 8400
-        }
-      ]
+      reviews: []
     },
     circuits: [],
     stallGrid: [
@@ -493,9 +434,9 @@ export const INITIAL_MARKETS: MarketEvent[] = [
       type: 'Industrial Substation + Dual 250 kVA Backup Generators'
     },
     performance: {
-      overallRating: 4.95,
-      totalVendorReviews: 210,
-      satisfactionRatePercent: 98,
+      overallRating: 5.0,
+      totalVendorReviews: 0,
+      satisfactionRatePercent: 100,
       avgDailyVendorRevenueZar: 18500,
       footTrafficConversionRatePercent: 41,
       repeatVendorRatePercent: 95,
@@ -507,26 +448,7 @@ export const INITIAL_MARKETS: MarketEvent[] = [
         { category: '#Crafts', demandSharePercent: 13, avgRevenueZar: 12100 },
         { category: '#ArtisanalFood', demandSharePercent: 10, avgRevenueZar: 19500 }
       ],
-      reviews: [
-        {
-          id: 'rev-301',
-          vendorName: 'Jozi Manga & Merch Alley',
-          vendorCategory: '#GeekCulture',
-          rating: 5.0,
-          comment: 'Massive foot traffic with incredible buying intent! Best sales weekend of the year.',
-          date: 'Sept 2025',
-          dailyRevenueReportedZar: 28500
-        },
-        {
-          id: 'rev-302',
-          vendorName: 'Retro Arcade Pins & Apparel',
-          vendorCategory: '#VintageFashion',
-          rating: 4.9,
-          comment: '70k+ attendees across 3 days. Power grid stayed 100% stable through dual industrial gensets.',
-          date: 'Sept 2025',
-          dailyRevenueReportedZar: 19200
-        }
-      ]
+      reviews: []
     },
     circuits: [],
     stallGrid: [
@@ -584,9 +506,9 @@ export const INITIAL_MARKETS: MarketEvent[] = [
       type: 'Solar Microgrid & Battery Bank'
     },
     performance: {
-      overallRating: 4.75,
-      totalVendorReviews: 68,
-      satisfactionRatePercent: 93,
+      overallRating: 5.0,
+      totalVendorReviews: 0,
+      satisfactionRatePercent: 100,
       avgDailyVendorRevenueZar: 7400,
       footTrafficConversionRatePercent: 26,
       repeatVendorRatePercent: 86,
@@ -597,17 +519,7 @@ export const INITIAL_MARKETS: MarketEvent[] = [
         { category: '#Crafts', demandSharePercent: 30, avgRevenueZar: 6400 },
         { category: '#LocalProduce', demandSharePercent: 25, avgRevenueZar: 6100 }
       ],
-      reviews: [
-        {
-          id: 'rev-401',
-          vendorName: 'Winelands Woodfired Pizza',
-          vendorCategory: '#ArtisanalFood',
-          rating: 4.8,
-          comment: 'Lovely Winelands crowd and great solar battery backup. Zero downtime during loadshedding.',
-          date: 'May 2026',
-          dailyRevenueReportedZar: 9100
-        }
-      ]
+      reviews: []
     },
     circuits: [],
     stallGrid: []
@@ -647,9 +559,9 @@ export const INITIAL_MARKETS: MarketEvent[] = [
       type: '100 kVA Automatic Diesel Backup'
     },
     performance: {
-      overallRating: 4.85,
-      totalVendorReviews: 88,
-      satisfactionRatePercent: 95,
+      overallRating: 5.0,
+      totalVendorReviews: 0,
+      satisfactionRatePercent: 100,
       avgDailyVendorRevenueZar: 8900,
       footTrafficConversionRatePercent: 29,
       repeatVendorRatePercent: 89,
@@ -661,237 +573,35 @@ export const INITIAL_MARKETS: MarketEvent[] = [
         { category: '#Crafts', demandSharePercent: 20, avgRevenueZar: 7200 },
         { category: '#VintageFashion', demandSharePercent: 15, avgRevenueZar: 6800 }
       ],
-      reviews: [
-        {
-          id: 'rev-501',
-          vendorName: 'Midrand Artisanal Bakery',
-          vendorCategory: '#ArtisanalFood',
-          rating: 4.9,
-          comment: 'Night market atmosphere was electric! Constant queue at our sourdough stand.',
-          date: 'July 2026',
-          dailyRevenueReportedZar: 11200
-        }
-      ]
+      reviews: []
     },
     circuits: [],
     stallGrid: []
   }
 ];
 
-export const INITIAL_APPLICATIONS: VendorApplication[] = [
-  {
-    id: 'app-101',
-    marketId: 'market-001',
-    marketTitle: 'Neighbourgoods Market - Spring Artisanal Festival',
-    coverImage: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=800&auto=format&fit=crop&q=80',
-    eventDate: '2026-09-12',
-    vendorId: 'vendor-001',
-    vendorName: "Plazr Market Vendor",
-    vendorCategory: '#ArtisanalFood',
-    selectedSpotId: 'SPOT-A1',
-    selectedSpotZone: 'Corner Spot (3x3m)',
-    status: 'approved_pending_payment',
-    appliedAt: '2026-08-05 14:30',
-    unpaidHoursRemaining: 48,
-    paymentDeadline: '2026-08-12 18:00',
-    feeBreakdown: {
-      baseStallFeeZar: 1250,
-      vendrPlatformFeeZar: 62.50,
-      docVerificationFeeZar: 0,
-      totalZar: 1312.50
-    },
-    payfastReference: 'PF-2026-88192'
-  },
-  {
-    id: 'app-102',
-    marketId: 'market-003',
-    marketTitle: 'Comic Con Africa 2026 - Vendor Alley',
-    coverImage: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop&q=80',
-    eventDate: '2026-09-25',
-    vendorId: 'vendor-001',
-    vendorName: "Plazr Market Vendor",
-    vendorCategory: '#ArtisanalFood',
-    selectedSpotId: 'CC-01',
-    selectedSpotZone: 'Corner Spot (3x3m)',
-    status: 'pending_planner_review',
-    appliedAt: '2026-08-06 09:15',
-    feeBreakdown: {
-      baseStallFeeZar: 3500,
-      vendrPlatformFeeZar: 175,
-      docVerificationFeeZar: 0,
-      totalZar: 3675
-    }
-  },
-  {
-    id: 'app-103',
-    marketId: 'market-001',
-    marketTitle: 'Neighbourgoods Market - Spring Artisanal Festival',
-    coverImage: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=800&auto=format&fit=crop&q=80',
-    eventDate: '2026-09-12',
-    vendorId: 'vendor-002',
-    vendorName: "Mama Africa Dumplings & Samp Bar",
-    vendorCategory: '#ArtisanalFood',
-    selectedSpotId: 'SPOT-A1 (Standby)',
-    selectedSpotZone: 'Food Zone A (Backup)',
-    status: 'waitlisted',
-    waitlistPosition: 1,
-    appliedAt: '2026-08-06 11:20',
-    feeBreakdown: {
-      baseStallFeeZar: 1250,
-      vendrPlatformFeeZar: 62.50,
-      docVerificationFeeZar: 0,
-      totalZar: 1312.50
-    }
-  },
-  {
-    id: 'app-104',
-    marketId: 'market-001',
-    marketTitle: 'Neighbourgoods Market - Spring Artisanal Festival',
-    coverImage: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=800&auto=format&fit=crop&q=80',
-    eventDate: '2026-09-12',
-    vendorId: 'vendor-004',
-    vendorName: "Kloof Street Vintage Threads",
-    vendorCategory: '#VintageFashion',
-    selectedSpotId: 'SPOT-B4 (Standby)',
-    selectedSpotZone: 'Fashion Zone B (Backup)',
-    status: 'waitlisted',
-    waitlistPosition: 2,
-    appliedAt: '2026-08-07 08:45',
-    feeBreakdown: {
-      baseStallFeeZar: 950,
-      vendrPlatformFeeZar: 47.50,
-      docVerificationFeeZar: 0,
-      totalZar: 997.50
-    }
-  }
-];
+export const INITIAL_APPLICATIONS: VendorApplication[] = [];
 
-export const INITIAL_APPLICANT_QUEUE: VendorProfile[] = [
-  {
-    id: 'vendor-002',
-    businessName: "Mama Africa Dumplings & Samp Bar",
-    ownerName: "Nomvula Dlamini",
-    email: "nomvula@mamaafricadumplings.co.za",
-    phone: "+27 73 992 1104",
-    category: '#ArtisanalFood',
-    bio: "Steamed traditional dombolo dumplings served with slow-cooked beef shin stew and chakalaka relish.",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
-    vettingStatus: 'vetted',
-    vettingFeePaid: true,
-    powerRequirementKw: 3.5,
-    documents: [],
-    socialReach: {
-      instagramFollowers: 18400,
-      tiktokFollowers: 34100,
-      facebookFollowers: 8200,
-      totalReach: 60700,
-      instagramHandle: '@mamaafricadumplings'
-    },
-    reliabilityIndex: {
-      rating: 4.95,
-      onTimeSetupPercent: 100,
-      cleanlinessScore: 5.0,
-      totalMarketsCompleted: 58
-    },
-    galleryImages: [
-      "https://images.unsplash.com/photo-1541832676-9b763b0239ab?w=600&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&auto=format&fit=crop&q=80"
-    ]
-  },
-  {
-    id: 'vendor-003',
-    businessName: "Kirstenbosch Botanical Ceramics",
-    ownerName: "Liam van der Merwe",
-    email: "liam@kirstenboschceramics.co.za",
-    phone: "+27 83 221 0092",
-    category: '#Crafts',
-    bio: "Hand-thrown porcelain tableware infused with real Protea leaf imprints and indigenous Cape floral glazes.",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80",
-    vettingStatus: 'vetted',
-    vettingFeePaid: true,
-    powerRequirementKw: 0.8,
-    documents: [],
-    socialReach: {
-      instagramFollowers: 29500,
-      tiktokFollowers: 12100,
-      facebookFollowers: 11400,
-      totalReach: 53000,
-      instagramHandle: '@kirstenbosch_ceramics'
-    },
-    reliabilityIndex: {
-      rating: 4.85,
-      onTimeSetupPercent: 96,
-      cleanlinessScore: 4.9,
-      totalMarketsCompleted: 31
-    },
-    galleryImages: [
-      "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=600&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80"
-    ]
-  },
-  {
-    id: 'vendor-004',
-    businessName: "Kloof Street Vintage Threads",
-    ownerName: "Anzi Mbeki",
-    email: "anzi@kloofthreads.co.za",
-    phone: "+27 61 883 4021",
-    category: '#VintageFashion',
-    bio: "Curated 90s streetwear, upcycled denim jackets with local Xhosa print embroidery, and retro sunglasses.",
-    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
-    vettingStatus: 'vetted',
-    vettingFeePaid: true,
-    powerRequirementKw: 0.5,
-    documents: [],
-    socialReach: {
-      instagramFollowers: 41200,
-      tiktokFollowers: 58900,
-      facebookFollowers: 3200,
-      totalReach: 103300,
-      instagramHandle: '@kloofstreet_vintage'
-    },
-    reliabilityIndex: {
-      rating: 4.92,
-      onTimeSetupPercent: 99,
-      cleanlinessScore: 4.85,
-      totalMarketsCompleted: 64
-    },
-    galleryImages: [
-      "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=600&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?w=600&auto=format&fit=crop&q=80"
-    ]
-  }
-];
+export const INITIAL_APPLICANT_QUEUE: VendorProfile[] = [];
 
 export const INITIAL_CHAT_THREADS: ChatThread[] = [
   {
-    id: 'chat-001',
+    id: 'chat-support',
     marketId: 'market-001',
-    marketTitle: 'Neighbourgoods Market - Spring Artisanal Festival',
-    vendorId: 'vendor-001',
-    vendorName: 'Bo-Kaap Gourmet Bunny Chow',
-    plannerName: 'Woodstock Collective Operations',
-    lastMessage: 'Your spot A1 is confirmed! Please ensure LPG certificate is updated before Sept 12.',
-    lastTimestamp: '10:42 AM',
+    marketTitle: 'Plazr Platform Support',
+    vendorId: 'guest-001',
+    vendorName: 'Market Vendor',
+    plannerName: 'Plazr Market Concierge',
+    lastMessage: 'Welcome to Plazr SA! How can we assist you with stall booking today?',
+    lastTimestamp: 'Just now',
     unreadByVendor: true,
     unreadByPlanner: false,
     messages: [
       {
-        id: 'm1',
-        sender: 'vendor',
-        text: 'Hi team! We require a 15A socket for our commercial slider griddle on Zone A1.',
-        timestamp: '10:15 AM'
-      },
-      {
-        id: 'm2',
+        id: 'm-welcome',
         sender: 'planner',
-        text: 'Hi Zainab! Zone A1 is wired directly to our 12kW Zone A Substation board with 16A breaker protection. Perfect for heavy griddles.',
-        timestamp: '10:30 AM'
-      },
-      {
-        id: 'm3',
-        sender: 'planner',
-        text: 'Your spot A1 is confirmed! Please ensure LPG certificate is updated before Sept 12.',
-        timestamp: '10:42 AM'
+        text: 'Welcome to Plazr SA! Reach out anytime if you need assistance selecting a stall spot, understanding power circuit limits, or verifying municipal compliance certificates.',
+        timestamp: 'Just now'
       }
     ]
   }
@@ -899,69 +609,17 @@ export const INITIAL_CHAT_THREADS: ChatThread[] = [
 
 export const INITIAL_NOTIFICATIONS: NotificationItem[] = [
   {
-    id: 'notif-2day-open',
-    title: '⏰ Market Opening in 2 Days: Stellenbosch Winelands Harvest Pop-Up',
-    message: 'Applications for Stellenbosch Winelands Harvest Pop-Up open in 48 hours (2 days prior notice)! Get your preferred stall spot ready.',
-    timestamp: '10 mins ago',
-    type: 'market_drop',
-    read: false,
-    actionTarget: 'discovery'
-  },
-  {
-    id: 'notif-drop-1',
-    title: '🚀 NEW MARKET DROP: Waterfront Artisanal Night Market',
-    message: 'A brand new artisanal night market in V&A Waterfront has officially dropped! Applications open for food & craft vendors.',
-    timestamp: '25 mins ago',
-    type: 'market_drop',
-    read: false,
-    actionTarget: 'discovery'
-  },
-  {
-    id: 'notif-1',
-    title: '⚠️ Compliance Outdated Warning: LPG Certificate',
-    message: 'Your LPG Gas Safety Certificate is expiring soon or outdated before your next event date. Please update it in Document Vault.',
-    timestamp: '1 hour ago',
-    type: 'warning',
-    read: false,
-    actionTarget: 'document_vault'
-  },
-  {
-    id: 'notif-2',
-    title: '💳 Application Approved — Payment Required',
-    message: 'Neighbourgoods Market approved your application for Spot A1 (Corner Spot 3x3m)! PayFast checkout is required within 48 hours to lock your stall.',
-    timestamp: '2 hours ago',
-    type: 'payment',
-    read: false,
-    actionTarget: 'applications'
-  },
-  {
-    id: 'notif-3',
-    title: '⚡ Loadshedding Backup Verified (verifiedbizlink.co.za)',
-    message: 'Woodstock Collective confirmed 45 kVA Generator backup active for Neighbourgoods Market Sept 12-13.',
-    timestamp: 'Yesterday',
+    id: 'notif-welcome',
+    title: '👋 Welcome to Plazr SA',
+    message: 'South African premier street market platform. Browse markets, select stall spots on interactive floor plans, and pay instantly via PayFast.',
+    timestamp: 'Just now',
     type: 'info',
-    read: true
+    read: false,
+    actionTarget: 'discovery'
   }
 ];
 
-export const INITIAL_WALLET_TRANSACTIONS: WalletTransaction[] = [
-  {
-    id: 'tx-001',
-    description: 'Wallet Top-Up via Instant EFT',
-    amountZar: 2500,
-    type: 'credit',
-    date: '2026-08-01',
-    reference: 'EFT-ZA-991204'
-  },
-  {
-    id: 'tx-002',
-    description: 'Plazr Vendor Vetting Fee',
-    amountZar: -50,
-    type: 'debit',
-    date: '2026-08-01',
-    reference: 'VNDR-VET-8821'
-  }
-];
+export const INITIAL_WALLET_TRANSACTIONS: WalletTransaction[] = [];
 
 export const INITIAL_MARKET_DROPS: MarketDropTeaser[] = [
   {
@@ -984,7 +642,7 @@ export const INITIAL_MARKET_DROPS: MarketDropTeaser[] = [
     expectedFootfall: 8500,
     categories: ['#ArtisanalFood', '#Crafts', '#LocalProduce', '#Vegan'],
     marketId: 'market-001',
-    remindCount: 342,
+    remindCount: 0,
     isReminded: false
   },
   {
@@ -1007,7 +665,7 @@ export const INITIAL_MARKET_DROPS: MarketDropTeaser[] = [
     expectedFootfall: 12000,
     categories: ['#ArtisanalFood', '#Halal', '#VintageFashion'],
     marketId: 'market-002',
-    remindCount: 819,
+    remindCount: 0,
     isReminded: false
   },
   {
@@ -1030,7 +688,7 @@ export const INITIAL_MARKET_DROPS: MarketDropTeaser[] = [
     expectedFootfall: 9800,
     categories: ['#Crafts', '#ArtisanalFood', '#BeautyWellness'],
     marketId: 'market-003',
-    remindCount: 520,
+    remindCount: 0,
     isReminded: false
   },
   {
@@ -1052,101 +710,10 @@ export const INITIAL_MARKET_DROPS: MarketDropTeaser[] = [
     expectedFootfall: 14000,
     categories: ['#Halal', '#ArtisanalFood', '#Crafts'],
     marketId: 'market-001',
-    remindCount: 215,
+    remindCount: 0,
     isReminded: false
   }
 ];
 
-export const INITIAL_FEATURED_VENDORS: FeaturedVendorSpotlight[] = [
-  {
-    id: 'fv-001',
-    businessName: 'Cape Organic Produce',
-    ownerName: 'Jacob & Sarah Marais',
-    city: 'Cape Town',
-    category: '#LocalProduce',
-    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&auto=format&fit=crop&q=80',
-    heroProductImage: 'https://images.unsplash.com/photo-1610348725531-843dff563e2c?w=600&auto=format&fit=crop&q=80',
-    bio: 'Heirloom Stellenbosch tomatoes, farm-fresh organic kale, and cold-pressed olive oils harvested weekly.',
-    rating: 4.9,
-    reviewsCount: 142,
-    topSellingProduct: 'Organic Heirloom Veg Basket',
-    verified: true,
-    totalEventsCompleted: 38
-  },
-  {
-    id: 'fv-002',
-    businessName: 'Protea Ceramics & Fynbos Glazes',
-    ownerName: 'Anika van Zyl',
-    city: 'Stellenbosch',
-    category: '#Crafts',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
-    heroProductImage: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600&auto=format&fit=crop&q=80',
-    bio: 'Hand-thrown stoneware dishes infused with real Cape Protea leaf textures and volcanic ash glazes.',
-    rating: 5.0,
-    reviewsCount: 98,
-    topSellingProduct: 'Handcrafted Protea Platter',
-    verified: true,
-    totalEventsCompleted: 24
-  },
-  {
-    id: 'fv-003',
-    businessName: 'EcoSanity Event Sanitation & Mobile Ablutions',
-    ownerName: 'Sipho & Lerato Dlamini',
-    city: 'Cape Town',
-    category: '#Sanitation',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=80',
-    heroProductImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80',
-    bio: 'Luxury solar-powered mobile restroom trailers, touchless hand sanitizing stations, and eco-certified waste management.',
-    rating: 4.95,
-    reviewsCount: 86,
-    topSellingProduct: 'VIP Solar Mobile Restroom Trailer Unit',
-    verified: true,
-    totalEventsCompleted: 64
-  },
-  {
-    id: 'fv-004',
-    businessName: 'ProStage & Gazebo Power Equipment',
-    ownerName: 'Gareth Thorne',
-    city: 'Johannesburg',
-    category: '#Equipment',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80',
-    heroProductImage: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80',
-    bio: 'Heavy-duty commercial pop-up gazebos, silent diesel generators, distribution boards, and warm festoon lighting.',
-    rating: 4.9,
-    reviewsCount: 112,
-    topSellingProduct: '3x3m Wind-Resistant Pro Gazebo + Lighting Kit',
-    verified: true,
-    totalEventsCompleted: 88
-  },
-  {
-    id: 'fv-005',
-    businessName: 'Guardian Tactical Event Security',
-    ownerName: 'Kagiso Mokoena',
-    city: 'Durban',
-    category: '#Security',
-    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&auto=format&fit=crop&q=80',
-    heroProductImage: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&auto=format&fit=crop&q=80',
-    bio: 'PSIRA-certified event security, VIP crowd management, overnight stall guard patrols, and electronic gate scanning.',
-    rating: 5.0,
-    reviewsCount: 140,
-    topSellingProduct: 'Overnight Stall Guard Patrol & Access Team',
-    verified: true,
-    totalEventsCompleted: 105
-  },
-  {
-    id: 'fv-006',
-    businessName: 'Jozi Vintage Thrift & Denim',
-    ownerName: 'Thabo Mokoena',
-    city: 'Johannesburg',
-    category: '#VintageFashion',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
-    heroProductImage: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=600&auto=format&fit=crop&q=80',
-    bio: 'Curated 90s streetwear, authentic leather jackets, and custom upcycled denim from Maboneng.',
-    rating: 4.8,
-    reviewsCount: 210,
-    topSellingProduct: 'Upcycled 90s Levi Denim Jacket',
-    verified: true,
-    totalEventsCompleted: 52
-  }
-];
+export const INITIAL_FEATURED_VENDORS: FeaturedVendorSpotlight[] = [];
 
