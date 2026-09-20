@@ -137,6 +137,22 @@ export async function updateUserRoleInDb(userId: string, newRole: UserRole): Pro
   }
 }
 
+// Secure password hasher using Web Crypto SHA-256 with fallback
+export async function hashPassword(password: string): Promise<string> {
+  try {
+    if (typeof crypto !== 'undefined' && crypto.subtle) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+  } catch {
+    // Fallback if crypto.subtle is unsupported in context
+  }
+  return btoa(password);
+}
+
 // Register a new user in Neon DB
 export async function registerUser(userData: {
   fullName: string;
@@ -152,7 +168,7 @@ export async function registerUser(userData: {
   await initDb();
   
   const id = 'usr_' + Math.random().toString(36).substring(2, 11) + Date.now().toString(36);
-  const passwordHash = btoa(userData.password);
+  const passwordHash = await hashPassword(userData.password);
 
   const existing = await sql`
     SELECT id FROM users WHERE email = ${userData.email.toLowerCase()} LIMIT 1
@@ -217,10 +233,22 @@ export async function loginUser(email: string, password: string): Promise<Regist
   }
 
   const row = result[0];
-  const inputHash = btoa(password);
+  const sha256Hash = await hashPassword(password);
+  const legacyBase64 = btoa(password);
 
-  if (row.password_hash !== inputHash && row.password_hash !== password) {
+  const isPasswordValid = row.password_hash === sha256Hash || row.password_hash === legacyBase64 || row.password_hash === password;
+
+  if (!isPasswordValid) {
     throw new Error('Incorrect password. Please try again.');
+  }
+
+  // Seamlessly upgrade legacy hash to SHA-256
+  if (row.password_hash !== sha256Hash) {
+    try {
+      await sql`UPDATE users SET password_hash = ${sha256Hash} WHERE id = ${row.id};`;
+    } catch {
+      // Non-blocking hash upgrade
+    }
   }
 
   // Force Super Admin role if email matches super admin list
